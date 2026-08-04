@@ -831,7 +831,7 @@
           <span>A</span>
         </div>
         <div class="greeting-text">
-          <div class="greeting-name" id="userNameDisplay">Alex Morgan</div>
+          <div class="greeting-name" id="userNameDisplay"></div>
           <div class="greeting-address">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
             <span>742 Evergreen Terr...</span>
@@ -1114,13 +1114,13 @@ const firebaseConfig = {
         console.log("Initializing Laundry Shop Firebase Realtime Database Structure...");
         
         // Retrieve local cached user session or initialize defaults
-      /*  const savedUser = localStorage.getItem('laundry_user');
+       const savedUser = localStorage.getItem('laundry_user');
         if (savedUser) {
           try {
-            this.user = JSON.parse(savedUser);
-            document.getElementById('userNameDisplay').textContent = this.user.name || 'Alex Morgan';
+          const user = JSON.parse(savedUser);
+            document.getElementById('userNameDisplay').textContent = user.name || user.email;
           } catch(e) {}
-        }*/
+        }
       },
       saveOrder: function(orderData) {
         orderData.id = 'LS-' + Math.floor(1000 + Math.random() * 9000);
