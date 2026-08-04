@@ -1210,11 +1210,12 @@ const firebaseConfig = {
       navigator.clipboard.writeText('CLEAN20');
       alert('Promo code CLEAN20 copied to clipboard!');
     }
-
-    function logoutUser() {
-      localStorage.removeItem('laundry_user');
-      window.location.href = 'customer-login.html';
-    }
+async function logoutUser() {
+    await firebase.auth().signOut();
+    localStorage.removeItem('laundry_user');
+    window.location.href = 'customer-login.html';
+}
+    
   </script>
 </body>
 </html>
