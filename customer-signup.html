@@ -480,6 +480,11 @@ const userCredential = await createUserWithEmailAndPassword(
     userData.email,
     userData.password
 );
+        const { updateProfile } = await import("https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js");
+
+await updateProfile(userCredential.user, {
+    displayName: userData.name
+});
 
 const uid = userCredential.user.uid;
 
