@@ -562,6 +562,12 @@ return userCredential.user;
           address: address,
           password: password
         });
+        const user = firebase.auth().currentUser;
+if (user) {
+    await user.updateProfile({
+        displayName: name
+    });
+}
 
         showAlert('Account created successfully! Redirecting...', 'success');
          await window.auth.signOut();
