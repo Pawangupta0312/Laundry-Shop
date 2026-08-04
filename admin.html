@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Laundry Shop - Admin Dashboard</title>
+  <style>
+    /* CSS Reset & Variables */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    :root {
+      --bg-color: #F5F7FB;
+      --card-bg: #FFFFFF;
+      --sidebar-bg: #0F172A;
+      --sidebar-text: #94A3B8;
+      --sidebar-active: #1E88E5;
+      --text-primary: #111111;
+      --text-secondary: #666666;
+      --text-muted: #999999;
+      --accent-blue: #1E88E5;
+      --accent-blue-light: #E3F2FD;
+      --success: #34C759;
+      --success-light: #E8F8EC;
+      --warning: #FFB300;
+      --warning-light: #FFF8E1;
+      --error: #FF3B30;
+      --error-light: #FFEBEE;
+      --border-color: #E2E8F0;
+      --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.04);
+      --radius: 16px;
+      --radius-sm: 10px;
+      --radius-pill: 50px;
+      --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-primary);
+      display: flex;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Layout Wrapper */
+    .admin-container {
+      display: flex;
+      width: 100%;
+      min-height: 100vh;
+    }
+
+    /* Sidebar Navigation */
+    .sidebar {
+      width: 260px;
+      background: var(--sidebar-bg);
+      color: var(--sidebar-text);
+      display: flex;
+      flex-direction: column;
+      padding: 24px 16px;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 500;
+      transition: var(--transition);
+    }
+
+    .sidebar-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 12px 24px 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      margin-bottom: 20px;
+    }
+
+    .brand-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--accent-blue);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #FFFFFF;
+    }
+
+    .brand-icon svg {
+      width: 24px;
+      height: 24px;
+      fill: currentColor;
+    }
+
+    .brand-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: #FFFFFF;
+      letter-spacing: -0.3px;
+    }
+
+    .brand-subtitle {
+      font-size: 11px;
+      color: var(--sidebar-text);
+    }
+
+    .nav-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex: 1;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      border-radius: var(--radius-sm);
+      color: var(--sidebar-text);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      background: none;
+      border: none;
+      width: 100%;
+      text-align: left;
+    }
+
+    .nav-link:hover, .nav-link.active {
+      background: rgba(30, 136, 229, 0.15);
+      color: #FFFFFF;
+    }
+
+    .nav-link.active svg {
+      stroke: var(--accent-blue);
+    }
+
+    .nav-link svg {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+    }
+
+    .nav-badge {
+      margin-left: auto;
+      background: var(--accent-blue);
+      color: #FFFFFF;
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: var(--radius-pill);
+      font-weight: 700;
+    }
+
+    .sidebar-footer {
+      padding-top: 16px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    /* Main Content Area */
+    .main-wrapper {
+      flex: 1;
+      margin-left: 260px;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    /* Top Navigation Header */
+    .top-header {
+      background: var(--card-bg);
+      padding: 16px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 400;
+    }
+
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: var(--text-primary);
+    }
+
+    .header-search {
+      display: flex;
+      align-items: center;
+      background: var(--bg-color);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-pill);
+      padding: 8px 16px;
+      width: 320px;
+      gap: 8px;
+    }
+
+    .header-search input {
+      border: none;
+      background: transparent;
+      outline: none;
+      width: 100%;
+      font-size: 13px;
+      color: var(--text-primary);
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    /* Shop Status Toggle Switch */
+    .shop-toggle-container {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg-color);
+      padding: 6px 14px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border-color);
+    }
+
+    .status-dot-pulse {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--success);
+      box-shadow: 0 0 8px var(--success);
+    }
+
+    .status-dot-pulse.closed {
+      background: var(--error);
+      box-shadow: 0 0 8px var(--error);
+    }
+
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 36px;
+      height: 20px;
+    }
+
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #CCC;
+      transition: .3s;
+      border-radius: 20px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 14px;
+      width: 14px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .3s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: var(--success);
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(16px);
+    }
+
+    .admin-profile {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+    }
+
+    .admin-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: var(--accent-blue);
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    /* Dashboard Content Wrapper */
+    .content-area {
+      padding: 28px;
+      flex: 1;
+    }
+
+    .page-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+
+    .page-title {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+
+    .page-subtitle {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      margin-bottom: 28px;
+    }
+
+    .stat-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 20px;
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-soft);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: var(--transition);
+    }
+
+    .stat-card:hover {
+      transform: translateY(-2px);
+    }
+
+    .stat-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+
+    .stat-value {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--text-primary);
+      line-height: 1;
+    }
+
+    .stat-trend {
+      font-size: 11px;
+      font-weight: 600;
+      margin-top: 8px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .stat-trend.up { color: var(--success); }
+    .stat-trend.down { color: var(--error); }
+
+    .stat-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .stat-icon.blue { background: var(--accent-blue-light); color: var(--accent-blue); }
+    .stat-icon.orange { background: var(--warning-light); color: var(--warning); }
+    .stat-icon.green { background: var(--success-light); color: var(--success); }
+    .stat-icon.purple { background: #F3E5F5; color: #8E24AA; }
+
+    /* Quick Action Buttons */
+    .quick-actions-bar {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .action-btn {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      padding: 10px 18px;
+      border-radius: var(--radius-pill);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-primary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: var(--transition);
+    }
+
+    .action-btn:hover {
+      background: var(--accent-blue);
+      color: #FFFFFF;
+      border-color: var(--accent-blue);
+    }
+
+    .action-btn.active {
+      background: var(--accent-blue);
+      color: #FFFFFF;
+      border-color: var(--accent-blue);
+    }
+
+    /* Orders Table Card */
+    .table-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-soft);
+      overflow: hidden;
+      margin-bottom: 28px;
+    }
+
+    .table-header-bar {
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-color);
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .table-title {
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .table-filters {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .filter-select {
+      background: var(--bg-color);
+      border: 1px solid var(--border-color);
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      font-weight: 600;
+      outline: none;
+      cursor: pointer;
+    }
+
+    /* Data Table */
+    .data-table-container {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 13px;
+    }
+
+    th {
+      background: #FAFAFA;
+      padding: 14px 20px;
+      color: var(--text-secondary);
+      font-weight: 700;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    td {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-color);
+      color: var(--text-primary);
+      vertical-align: middle;
+    }
+
+    tr:hover {
+      background: #F8FAFC;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .status-badge.Pending { background: var(--warning-light); color: var(--warning); }
+    .status-badge.Accepted { background: var(--accent-blue-light); color: var(--accent-blue); }
+    .status-badge.Processing { background: #E1F5FE; color: #0288D1; }
+    .status-badge.Ironing { background: #F3E5F5; color: #7B1FA2; }
+    .status-badge.Ready { background: #E8F5E9; color: #2E7D32; }
+    .status-badge.Delivered { background: var(--success-light); color: var(--success); }
+    .status-badge.Rejected { background: var(--error-light); color: var(--error); }
+
+    .btn-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-sm {
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 11px;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .btn-accept { background: var(--success-light); color: var(--success); }
+    .btn-accept:hover { background: var(--success); color: #FFFFFF; }
+
+    .btn-reject { background: var(--error-light); color: var(--error); }
+    .btn-reject:hover { background: var(--error); color: #FFFFFF; }
+
+    .btn-update { background: var(--accent-blue-light); color: var(--accent-blue); }
+    .btn-update:hover { background: var(--accent-blue); color: #FFFFFF; }
+
+    /* Tab Panes */
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* Modal Styling */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: var(--transition);
+      padding: 20px;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal-box {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      width: 100%;
+      max-width: 520px;
+      padding: 24px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+      transform: scale(0.95);
+      transition: var(--transition);
+    }
+
+  .modal-overlay.active .modal-box {
+      transform: scale(1);
+    }
+
+    .modal-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .modal-head h3 {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .close-x {
+      background: var(--bg-color);
+      border: none;
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      outline: none;
+    }
+
+    .form-control:focus {
+      border-color: var(--accent-blue);
+    }
+
+    .primary-btn {
+      width: 100%;
+      background: var(--accent-blue);
+      color: #FFFFFF;
+      border: none;
+      padding: 12px;
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    /* Responsive Breakdown */
+    @media (max-width: 900px) {
+      .sidebar {
+        transform: translateX(-100%);
+      }
+      .sidebar.open {
+        transform: translateX(0);
+      }
+      .main-wrapper {
+        margin-left: 0;
+      }
+      .mobile-menu-btn {
+        display: block;
+      }
+      .header-search {
+        width: 180px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="admin-container">
+
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-icon">
+          <svg viewBox="0 0 24 24"><path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4M12,6A6,6 0 0,0 6,12A6,6 0 0,0 12,18A6,6 0 0,0 18,12A6,6 0 0,0 12,6M12,8A4,4 0 0,1 16,12A4,4 0 0,1 12,16A4,4 0 0,1 8,12A4,4 0 0,1 12,8Z"/></svg>
+        </div>
+        <div>
+          <div class="brand-title">Laundry Shop</div>
+          <div class="brand-subtitle">Admin Control Panel</div>
+        </div>
+      </div>
+
+      <ul class="nav-list">
+        <li>
+          <button class="nav-link active" onclick="switchTab('dashboard')">
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+            <span>Dashboard</span>
+          </button>
+        </li>
+        <li>
+          <button class="nav-link" onclick="switchTab('orders')">
+            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            <span>Manage Orders</span>
+            <span class="nav-badge" id="pendingCountBadge">3</span>
+          </button>
+        </li>
+        <li>
+          <button class="nav-link" onclick="switchTab('services')">
+            <svg viewBox="0 0 24 24"><path d="M21 16H3a1 1 0 0 1-1-1V9a4 4 0 0 1 4-4h12a3 3 0 0 1 3 3v8a1 1 0 0 1-1 1z"/></svg>
+            <span>Manage Services</span>
+          </button>
+        </li>
+        <li>
+          <button class="nav-link" onclick="switchTab('customers')">
+            <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            <span>Customers</span>
+          </button>
+        </li>
+        <li>
+          <button class="nav-link" onclick="switchTab('reports')">
+            <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+            <span>Reports & Sales</span>
+          </button>
+        </li>
+        <li>
+          <button class="nav-link" onclick="switchTab('settings')">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            <span>Settings</span>
+          </button>
+        </li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <button class="nav-link" style="color: var(--error);" onclick="logoutAdmin()">
+          <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          <span>Admin Logout</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Wrapper -->
+    <div class="main-wrapper">
+
+      <!-- Top Header -->
+      <header class="top-header">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+          <div class="header-search">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" placeholder="Search orders, customers..." id="searchInput" onkeyup="filterOrdersTable()">
+          </div>
+        </div>
+
+        <div class="header-right">
+          <!-- Shop Online/Offline Switch -->
+          <div class="shop-toggle-container">
+            <span class="status-dot-pulse" id="shopStatusDot"></span>
+            <span style="font-size: 12px; font-weight: 700;" id="shopStatusText">Shop Open</span>
+            <label class="toggle-switch">
+              <input type="checkbox" id="shopToggleCheck" checked onchange="toggleShopStatus(this)">
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <div class="admin-profile" onclick="switchTab('settings')">
+            <div class="admin-avatar">AD</div>
+            <div style="display: flex; flex-direction: column;">
+              <span style="font-size: 13px; font-weight: 700;">Manager</span>
+              <span style="font-size: 11px; color: var(--text-secondary);">Super Admin</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Content Container -->
+      <main class="content-area">
+
+        <!-- TAB 1: DASHBOARD OVERVIEW -->
+        <div class="tab-content active" id="tab-dashboard">
+          <div class="page-title-row">
+            <div>
+              <h1 class="page-title">Dashboard Overview</h1>
+              <p class="page-subtitle">Real-time status of orders, revenue, and customer activity</p>
+            </div>
+            <button class="action-btn active" onclick="openNewOrderModal()">+ New Walk-in Order</button>
+          </div>
+
+          <!-- Statistics Cards -->
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-info">
+                <span class="stat-label">Today's Orders</span>
+                <span class="stat-value" id="statTodayOrders">18</span>
+                <span class="stat-trend up">↑ 12% vs yesterday</span>
+              </div>
+              <div class="stat-icon blue">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/></svg>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-info">
+                <span class="stat-label">Pending Orders</span>
+                <span class="stat-value" id="statPendingOrders">3</span>
+                <span class="stat-trend down">Requires Action</span>
+              </div>
+              <div class="stat-icon orange">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-info">
+                <span class="stat-label">Completed Orders</span>
+                <span class="stat-value" id="statCompletedOrders">142</span>
+                <span class="stat-trend up">↑ 98% fulfillment rate</span>
+              </div>
+              <div class="stat-icon green">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-info">
+                <span class="stat-label">Total Revenue</span>
+                <span class="stat-value" id="statRevenue">$1,248.50</span>
+                <span class="stat-trend up">↑ $340.00 this week</span>
+              </div>
+              <div class="stat-icon purple">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Actions Bar -->
+          <div class="quick-actions-bar">
+            <button class="action-btn" onclick="filterByStatus('All')">All Orders</button>
+            <button class="action-btn" onclick="filterByStatus('Pending')">⚠️ Pending (3)</button>
+            <button class="action-btn" onclick="filterByStatus('Processing')">🧼 Under Processing</button>
+            <button class="action-btn" onclick="filterByStatus('Ready')">✨ Ready for Delivery</button>
+          </div>
+
+          <!-- Manage Orders Table -->
+          <div class="table-card">
+            <div class="table-header-bar">
+              <h3 class="table-title">Recent Orders Queue</h3>
+              <div class="table-filters">
+                <select class="filter-select" id="statusFilterSelect" onchange="filterOrdersTable()">
+                  <option value="All">All Statuses</option>
+                  <option value="Pending">Pending</option>
+                  <option value="Accepted">Accepted</option>
+                  <option value="Picked Up">Picked Up</option>
+                  <option value="Under Processing">Under Processing</option>
+                  <option value="Ironing">Ironing</option>
+                  <option value="Ready">Ready</option>
+                  <option value="Delivered">Delivered</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="data-table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Order ID</th>
+                    <th>Customer</th>
+                    <th>Services / Clothes</th>
+                    <th>Pickup Date</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="ordersTableBody">
+                  <!-- Dynamic JS Population -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 2: MANAGE ORDERS FULL VIEW -->
+        <div class="tab-content" id="tab-orders">
+          <div class="page-title-row">
+            <div>
+              <h1 class="page-title">Manage Laundry Orders</h1>
+              <p class="page-subtitle">Accept, reject, or update order statuses in real-time</p>
+            </div>
+          </div>
+          <!-- Table duplicate view with search/filters -->
+          <div class="table-card">
+            <div class="data-table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Order ID</th>
+                    <th>Customer</th>
+                    <th>Services</th>
+                    <th>Instructions</th>
+                    <th>Total Price</th>
+                    <th>Status</th>
+                    <th>Change Status</th>
+                  </tr>
+                </thead>
+                <tbody id="fullOrdersTableBody">
+                  <!-- JS Populated -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 3: MANAGE SERVICES -->
+        <div class="tab-content" id="tab-services">
+          <div class="page-title-row">
+            <div>
+              <h1 class="page-title">Manage Laundry Services</h1>
+              <p class="page-subtitle">Configure prices per service, turn services on/off</p>
+            </div>
+            <button class="action-btn active" onclick="openAddServiceModal()">+ Add New Service</button>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;" id="servicesContainer">
+            <!-- Dynamic JS Services Cards -->
+          </div>
+        </div>
+
+        <!-- TAB 4: CUSTOMERS -->
+        <div class="tab-content" id="tab-customers">
+          <div class="page-title-row">
+            <div>
+              <h1 class="page-title">Registered Customers</h1>
+              <p class="page-subtitle">View active users and order history</p>
+            </div>
+          </div>
+
+          <div class="table-card">
+            <div class="data-table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Customer Name</th>
+                    <th>Phone</th>
+                    <th>Email</th>
+                    <th>Default Address</th>
+                    <th>Total Orders</th>
+                  </tr>
+                </thead>
+                <tbody id="customersTableBody">
+                  <!-- Populated dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 5: REPORTS -->
+        <div class="tab-content" id="tab-reports">
+          <div class="page-title-row">
+            <div>
+              <h1 class="page-title">Sales & Analytics Reports</h1>
+              <p class="page-subtitle">Performance breakdown and operational logs</p>
+            </div>
+          </div>
+          <div style="background: var(--card-bg); padding: 24px; border-radius: var(--radius); border: 1px solid var(--border-color);">
+            <h3 style="margin-bottom: 12px;">Weekly Revenue Summary</h3>
+            <p style="color: var(--text-secondary); font-size: 14px;">Total Completed Orders: 142 • Total Earned: $1,248.50</p>
+          </div>
+        </div>
+
+        <!-- TAB 6: SETTINGS -->
+        <div class="tab-content" id="tab-settings">
+          <div class="page-title-row">
+            <div>
+              <h1 class="page-title">Shop Settings</h1>
+              <p class="page-subtitle">General shop configuration & Firebase Database connection settings</p>
+            </div>
+          </div>
+          <div style="background: var(--card-bg); padding: 24px; border-radius: var(--radius); border: 1px solid var(--border-color); max-width: 600px;">
+            <div class="form-group">
+              <label>Shop Name</label>
+              <input type="text" class="form-control" value="Laundry Shop Downtown Hub">
+            </div>
+            <div class="form-group">
+              <label>Operating Hours</label>
+              <input type="text" class="form-control" value="8:00 AM - 9:00 PM">
+            </div>
+            <div class="form-group">
+              <label>Firebase Database Endpoint</label>
+              <input type="text" class="form-control" value="https://laundry-shop-app-default-rtdb.firebaseio.com">
+            </div>
+            <button class="primary-btn" onclick="alert('Settings saved successfully!')">Save Configuration</button>
+          </div>
+        </div>
+
+      </main>
+
+    </div>
+
+  </div>
+
+  <!-- Modal: Update Order Status -->
+  <div class="modal-overlay" id="updateStatusModal">
+    <div class="modal-box">
+      <div class="modal-head">
+        <h3 id="modalOrderTitle">Update Order Status</h3>
+        <button class="close-x" onclick="closeModal('updateStatusModal')">✕</button>
+      </div>
+      <div class="form-group">
+        <label>Select New Status</label>
+        <select class="form-control" id="modalStatusSelect">
+          <option value="Pending">Pending</option>
+          <option value="Accepted">Accepted</option>
+          <option value="Picked Up">Picked Up</option>
+          <option value="Under Processing">Under Processing</option>
+          <option value="Ironing">Ironing</option>
+          <option value="Ready">Ready</option>
+          <option value="Delivered">Delivered</option>
+          <option value="Rejected">Rejected</option>
+        </select>
+      </div>
+      <button class="primary-btn" onclick="saveUpdatedStatus()">Save Status</button>
+    </div>
+  </div>
+
+  <!-- Modal: New Walk-in Order -->
+  <div class="modal-overlay" id="newOrderModal">
+    <div class="modal-box">
+      <div class="modal-head">
+        <h3>Create Walk-in Order</h3>
+        <button class="close-x" onclick="closeModal('newOrderModal')">✕</button>
+      </div>
+      <div class="form-group">
+        <label>Customer Name</label>
+        <input type="text" class="form-control" id="walkinName" placeholder="John Doe">
+      </div>
+      <div class="form-group">
+        <label>Service Type</label>
+        <select class="form-control" id="walkinService">
+          <option value="Washing">Washing ($2.50/kg)</option>
+          <option value="Ironing">Ironing ($1.50/pc)</option>
+          <option value="Dry Cleaning">Dry Cleaning ($5.00/pc)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Amount ($)</label>
+        <input type="number" class="form-control" id="walkinAmount" placeholder="15.00">
+      </div>
+      <button class="primary-btn" onclick="submitWalkinOrder()">Create Order</button>
+    </div>
+  </div>
+
+<script>
+    /* Vanilla JS Admin Panel Controller & Firebase Database Preparedness */
+    
+const firebaseConfig = {
+  apiKey: "AIzaSyDgDBO5MwwMk1_8JoZCQALJZ6qDkKT6wp0",
+  authDomain: "laundry-shop-b6981.firebaseapp.com",
+  databaseURL: "https://laundry-shop-b6981-default-rtdb.firebaseio.com",
+  projectId: "laundry-shop-b6981",
+  storageBucket: "laundry-shop-b6981.firebasestorage.app",
+  messagingSenderId: "151928558974",
+  appId: "1:151928558974:web:35d60143030176b32e0f2f"
+};
+
+  // Initial Mock Orders State
+    let ordersList = [
+      { id: 'LS-8842', customer: 'Alex Morgan', phone: '+1 555-234-5678', service: 'Washing & Ironing', items: '3 Shirts, 2 Trousers', amount: 18.50, date: '2026-08-03', status: 'Under Processing', notes: 'Fold neatly please' },
+      { id: 'LS-8841', customer: 'Sarah Jenkins', phone: '+1 555-987-6543', service: 'Dry Cleaning', items: '2 Evening Dresses', amount: 24.00, date: '2026-08-03', status: 'Pending', notes: 'Stain on blue dress' },
+      { id: 'LS-8840', customer: 'Michael Brown', phone: '+1 555-456-7890', service: 'Ironing', items: '5 Suits', amount: 15.00, date: '2026-08-02', status: 'Accepted', notes: 'Hangers required' },
+      { id: 'LS-8839', customer: 'Emma Watson', phone: '+1 555-111-2222', service: 'Washing', items: '8kg Laundry', amount: 20.00, date: '2026-08-02', status: 'Ready', notes: '' },
+      { id: 'LS-8838', customer: 'David Clark', phone: '+1 555-333-4444', service: 'Premium Care', items: 'Silk Robe', amount: 12.50, date: '2026-08-01', status: 'Delivered', notes: '' }
+    ];
+
+    let servicesList = [
+      { id: 1, name: 'Washing', price: 2.50, unit: 'kg', active: true, desc: 'Eco-friendly wash & fold' },
+      { id: 2, name: 'Ironing', price: 1.50, unit: 'pc', active: true, desc: 'Steam press finishing' },
+      { id: 3, name: 'Dry Cleaning', price: 5.00, unit: 'pc', active: true, desc: 'Solvent dry cleaning for delicates' },
+      { id: 4, name: 'Premium Care', price: 8.00, unit: 'pc', active: true, desc: 'Luxury garment handling & stain removal' }
+    ];
+
+    let activeSelectedOrderId = null;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Load saved orders from localStorage if existing
+      const localOrders = localStorage.getItem('laundry_orders');
+      if (localOrders) {
+        try {
+          const parsed = JSON.parse(localOrders);
+          if (parsed.length > 0) {
+            ordersList = parsed.concat(ordersList);
+          }
+        } catch(e) {}
+      }
+
+      renderOrdersTable(ordersList);
+      renderServicesList();
+      renderCustomersList();
+      updateDashboardStats();
+    });
+
+    function renderOrdersTable(data) {
+      const tbody = document.getElementById('ordersTableBody');
+      const fullTbody = document.getElementById('fullOrdersTableBody');
+      if (!tbody) return;
+
+      tbody.innerHTML = '';
+      if (fullTbody) fullTbody.innerHTML = '';
+
+      data.forEach(order => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td><strong>${order.id}</strong></td>
+          <td>
+            <div style="font-weight: 700;">${order.customer}</div>
+            <div style="font-size: 11px; color: var(--text-secondary);">${order.phone}</div>
+          </td>
+          <td>
+            <div>${order.service}</div>
+            <div style="font-size: 11px; color: var(--text-muted);">${order.items || ''}</div>
+          </td>
+          <td>${order.date}</td>
+          <td><strong>$${parseFloat(order.amount).toFixed(2)}</strong></td>
+          <td><span class="status-badge ${order.status.replace(/\s+/g, '')}">${order.status}</span></td>
+          <td>
+            <div class="btn-group">
+              ${order.status === 'Pending' ? `
+                <button class="btn-sm btn-accept" onclick="updateOrderStatus('${order.id}', 'Accepted')">Accept</button>
+                <button class="btn-sm btn-reject" onclick="updateOrderStatus('${order.id}', 'Rejected')">Reject</button>
+              ` : `
+                <button class="btn-sm btn-update" onclick="openStatusModal('${order.id}', '${order.status}')">Update Status</button>
+              `}
+            </div>
+          </td>
+        `;
+        tbody.appendChild(row);
+
+        if (fullTbody) {
+          const fullRow = row.cloneNode(true);
+          fullTbody.appendChild(fullRow);
+        }
+      });
+    }
+
+    function renderServicesList() {
+      const container = document.getElementById('servicesContainer');
+      if (!container) return;
+      container.innerHTML = '';
+
+      servicesList.forEach(s => {
+        const card = document.createElement('div');
+        card.style.cssText = 'background: var(--card-bg); padding: 20px; border-radius: var(--radius); border: 1px solid var(--border-color);';
+        card.innerHTML = `
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+            <h3 style="font-size: 16px; font-weight: 700;">${s.name}</h3>
+            <span style="font-size: 11px; font-weight: 700; background: ${s.active ? 'var(--success-light)' : 'var(--error-light)'}; color: ${s.active ? 'var(--success)' : 'var(--error)'}; padding: 2px 8px; border-radius: 20px;">
+              ${s.active ? 'Active' : 'Disabled'}
+            </span>
+          </div>
+          <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 12px;">${s.desc}</p>
+          <div style="font-size: 18px; font-weight: 800; color: var(--accent-blue); margin-bottom: 14px;">$${s.price.toFixed(2)} / ${s.unit}</div>
+          <button class="btn-sm btn-update" style="width: 100%; padding: 8px;" onclick="toggleServiceActive(${s.id})">Toggle Status</button>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function renderCustomersList() {
+      const tbody = document.getElementById('customersTableBody');
+      if (!tbody) return;
+      tbody.innerHTML = `
+        <tr>
+          <td><strong>Welcome</strong></td>
+          <td>+1 (555) 234-5678</td>
+          <td>alex@example.com</td>
+          <td>742 Evergreen Terrace</td>
+          <td>12 Orders</td>
+        </tr>
+        <tr>
+          <td><strong>Sarah Jenkins</strong></td>
+          <td>+1 (555) 987-6543</td>
+          <td>sarah.j@example.com</td>
+          <td>104 Oakwood Avenue</td>
+          <td>5 Orders</td>
+        </tr>
+      `;
+    }
+
+    function updateDashboardStats() {
+      const pending = ordersList.filter(o => o.status === 'Pending').length;
+      const completed = ordersList.filter(o => o.status === 'Delivered').length;
+      document.getElementById('statPendingOrders').textContent = pending;
+      document.getElementById('pendingCountBadge').textContent = pending;
+    }
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+
+      const target = document.getElementById('tab-' + tabId);
+      if (target) target.classList.add('active');
+
+      // Highlight matching nav item
+      event.currentTarget.classList.add('active');
+
+      // Close mobile drawer if open
+      document.getElementById('sidebar').classList.remove('open');
+    }
+
+    function toggleSidebar() {
+      document.getElementById('sidebar').classList.toggle('open');
+    }
+
+    function toggleShopStatus(checkbox) {
+      const dot = document.getElementById('shopStatusDot');
+      const text = document.getElementById('shopStatusText');
+      if (checkbox.checked) {
+        dot.classList.remove('closed');
+        text.textContent = 'Shop Open';
+      } else {
+        dot.classList.add('closed');
+        text.textContent = 'Shop Closed';
+      }
+    }
+
+    function updateOrderStatus(orderId, newStatus) {
+      const idx = ordersList.findIndex(o => o.id === orderId);
+      if (idx !== -1) {
+        ordersList[idx].status = newStatus;
+        localStorage.setItem('laundry_orders', JSON.stringify(ordersList));
+        renderOrdersTable(ordersList);
+        updateDashboardStats();
+      }
+    }
+
+    function openStatusModal(orderId, currentStatus) {
+      activeSelectedOrderId = orderId;
+      document.getElementById('modalOrderTitle').textContent = 'Update Status for ' + orderId;
+      document.getElementById('modalStatusSelect').value = currentStatus;
+      openModal('updateStatusModal');
+    }
+
+    function saveUpdatedStatus() {
+      const newStatus = document.getElementById('modalStatusSelect').value;
+      if (activeSelectedOrderId) {
+        updateOrderStatus(activeSelectedOrderId, newStatus);
+        closeModal('updateStatusModal');
+      }
+    }
+
+    function filterByStatus(status) {
+      document.getElementById('statusFilterSelect').value = status;
+      filterOrdersTable();
+    }
+
+    function filterOrdersTable() {
+      const query = document.getElementById('searchInput').value.toLowerCase();
+      const statusFilter = document.getElementById('statusFilterSelect').value;
+
+      const filtered = ordersList.filter(o => {
+        const matchesQuery = o.id.toLowerCase().includes(query) || o.customer.toLowerCase().includes(query);
+        const matchesStatus = statusFilter === 'All' || o.status === statusFilter;
+        return matchesQuery && matchesStatus;
+      });
+
+      renderOrdersTable(filtered);
+    }
+
+    function openModal(id) {
+      const modal = document.getElementById(id);
+      if (modal) modal.classList.add('active');
+    }
+
+    function closeModal(id) {
+      const modal = document.getElementById(id);
+      if (modal) modal.classList.remove('active');
+    }
+
+    function openNewOrderModal() {
+      openModal('newOrderModal');
+    }
+
+    function submitWalkinOrder() {
+      const name = document.getElementById('walkinName').value || 'Walk-in Customer';
+      const service = document.getElementById('walkinService').value;
+      const amount = parseFloat(document.getElementById('walkinAmount').value) || 15.00;
+
+      const newOrder = {
+        id: 'LS-' + Math.floor(1000 + Math.random() * 9000),
+        customer: name,
+        phone: 'Walk-in',
+        service: service,
+        items: 'Counter order',
+        amount: amount,
+        date: new Date().toISOString().split('T')[0],
+        status: 'Accepted',
+        notes: 'Walk-in'
+      };
+
+      ordersList.unshift(newOrder);
+      localStorage.setItem('laundry_orders', JSON.stringify(ordersList));
+      renderOrdersTable(ordersList);
+      updateDashboardStats();
+      closeModal('newOrderModal');
+    }
+
+    function logoutAdmin() {
+      window.location.href = 'admin-login.html';
+    }
+  </script>
+</body>
+</html>
