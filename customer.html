@@ -1097,13 +1097,13 @@ const firebaseConfig = {
 };
     // Simulated Firebase Database Configuration Container
     window.LaundryFirebaseConfig = {
-      apiKey: "FIREBASE_API_KEY_PLACEHOLDER",
-      authDomain: "laundry-shop-app.firebaseapp.com",
-      databaseURL: "https://laundry-shop-app-default-rtdb.firebaseio.com",
-      projectId: "laundry-shop-app",
-      storageBucket: "laundry-shop-app.appspot.com",
-      messagingSenderId: "102030405060",
-      appId: "1:102030405060:web:abc123def456"
+      apiKey: "AIzaSyDgDBO5MwwMk1_8JoZCQALJZ6qDkKT6wp0",
+  authDomain: "laundry-shop-b6981.firebaseapp.com",
+  databaseURL: "https://laundry-shop-b6981-default-rtdb.firebaseio.com",
+  projectId: "laundry-shop-b6981",
+  storageBucket: "laundry-shop-b6981.firebasestorage.app",
+  messagingSenderId: "151928558974",
+  appId: "1:151928558974:web:35d60143030176b32e0f2f"
     };
 
     // Firebase Integration Handler Structure
@@ -1112,14 +1112,15 @@ const firebaseConfig = {
       orders: [],
       init: function() {
         console.log("Initializing Laundry Shop Firebase Realtime Database Structure...");
+        
         // Retrieve local cached user session or initialize defaults
-        const savedUser = localStorage.getItem('laundry_user');
+      /*  const savedUser = localStorage.getItem('laundry_user');
         if (savedUser) {
           try {
             this.user = JSON.parse(savedUser);
             document.getElementById('userNameDisplay').textContent = this.user.name || 'Alex Morgan';
           } catch(e) {}
-        }
+        }*/
       },
       saveOrder: function(orderData) {
         orderData.id = 'LS-' + Math.floor(1000 + Math.random() * 9000);
