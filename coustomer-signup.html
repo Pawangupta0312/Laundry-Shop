@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Laundry Shop - Customer Signup</title>
+  <style>
+    /* CSS Reset & Variable Definitions */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    :root {
+      --bg-color: #F5F7FB;
+      --card-bg: #FFFFFF;
+      --text-primary: #111111;
+      --text-secondary: #666666;
+      --text-muted: #999999;
+      --accent-blue: #1E88E5;
+      --accent-blue-light: #E3F2FD;
+      --success: #34C759;
+      --success-light: #E8F8EC;
+      --warning: #FFB300;
+      --error: #FF3B30;
+      --error-light: #FFEBEE;
+      --border-color: #EEF2F6;
+      --shadow-soft: 0 8px 24px rgba(17, 17, 17, 0.05);
+      --shadow-hover: 0 12px 32px rgba(30, 136, 229, 0.12);
+      --radius: 20px;
+      --radius-sm: 12px;
+      --radius-pill: 50px;
+      --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-primary);
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* App Container for Mobile First & Desktop Centering */
+    .app-viewport {
+      width: 100%;
+      max-width: 480px;
+      background-color: var(--bg-color);
+      min-height: 100vh;
+      position: relative;
+      padding: 24px 20px 40px 20px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 0 50px rgba(0, 0, 0, 0.03);
+    }
+
+    /* Top Bar */
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+
+    .back-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-primary);
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+      transition: var(--transition);
+      text-decoration: none;
+    }
+
+    .back-btn:active {
+      transform: scale(0.92);
+    }
+
+    .page-indicator {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    /* Brand Header */
+    .header-section {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .brand-logo-small {
+      width: 64px;
+      height: 64px;
+      background: linear-gradient(135deg, #1E88E5 0%, #1565C0 100%);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px auto;
+      box-shadow: 0 8px 20px rgba(30, 136, 229, 0.3);
+    }
+
+    .brand-logo-small svg {
+      width: 36px;
+      height: 36px;
+      fill: #FFFFFF;
+    }
+
+    .title {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--text-primary);
+      letter-spacing: -0.5px;
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    /* Signup Card Form */
+    .signup-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 24px;
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-soft);
+      margin-bottom: 24px;
+    }
+
+    /* Form Fields */
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+      letter-spacing: 0.3px;
+    }
+
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-icon {
+      position: absolute;
+      left: 14px;
+      color: var(--text-muted);
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 14px 14px 14px 44px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      color: var(--text-primary);
+      background: var(--bg-color);
+      outline: none;
+      transition: var(--transition);
+    }
+
+    .form-input:focus {
+      background: #FFFFFF;
+      border-color: var(--accent-blue);
+      box-shadow: 0 0 0 3px var(--accent-blue-light);
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: 14px;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 4px;
+      display: flex;
+      align-items: center;
+    }
+
+    textarea.form-input {
+      resize: vertical;
+      min-height: 70px;
+      padding-top: 12px;
+    }
+
+    /* Terms Checkbox */
+    .checkbox-group {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 20px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+
+    .checkbox-group input {
+      margin-top: 2px;
+      accent-color: var(--accent-blue);
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+    }
+
+    .checkbox-group a {
+      color: var(--accent-blue);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    /* Alert Banner */
+    .alert-banner {
+      padding: 12px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      margin-bottom: 18px;
+      display: none;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .alert-banner.error {
+      background: var(--error-light);
+      color: var(--error);
+      border: 1px solid #FFCDD2;
+      display: flex;
+    }
+
+    .alert-banner.success {
+      background: var(--success-light);
+      color: var(--success);
+      border: 1px solid #C8E6C9;
+      display: flex;
+    }
+
+    /* Submit Button */
+    .primary-btn {
+      width: 100%;
+      background: linear-gradient(135deg, #1E88E5 0%, #1565C0 100%);
+      color: #FFFFFF;
+      border: none;
+      padding: 16px;
+      border-radius: var(--radius-pill);
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(30, 136, 229, 0.3);
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .primary-btn:active {
+      transform: scale(0.98);
+    }
+
+    .primary-btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    .spinner {
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top-color: #FFFFFF;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      display: none;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Login Link Section */
+    .auth-footer {
+      text-align: center;
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-top: auto;
+    }
+
+    .auth-footer a {
+      color: var(--accent-blue);
+      font-weight: 700;
+      text-decoration: none;
+      margin-left: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-viewport">
+
+    <!-- Top Navigation Bar -->
+    <div class="top-bar">
+      <a href="customer-login.html" class="back-btn" aria-label="Go Back">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+      </a>
+      <span class="page-indicator">Step 1 of 1</span>
+    </div>
+
+    <!-- Header Section -->
+    <div class="header-section">
+      <div class="brand-logo-small">
+        <svg viewBox="0 0 24 24">
+          <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4M12,6A6,6 0 0,0 6,12A6,6 0 0,0 12,18A6,6 0 0,0 18,12A6,6 0 0,0 12,6M12,8A4,4 0 0,1 16,12A4,4 0 0,1 12,16A4,4 0 0,1 8,12A4,4 0 0,1 12,8Z"/>
+        </svg>
+      </div>
+      <h1 class="title">Create Account</h1>
+      <p class="subtitle">Join Laundry Shop for effortless pickup & laundry delivery</p>
+    </div>
+
+    <!-- Alert Banner -->
+    <div class="alert-banner" id="alertBanner">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <span id="alertMessage">Error message here</span>
+    </div>
+
+    <!-- Signup Form -->
+    <form class="signup-card" id="signupForm" onsubmit="handleSignup(event)">
+
+      <!-- Full Name -->
+      <div class="form-group">
+        <label for="fullName">Full Name</label>
+        <div class="input-wrapper">
+          <div class="input-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <input type="text" id="fullName" class="form-input" placeholder="e.g. Alex Morgan" required />
+        </div>
+      </div>
+
+      <!-- Email Address -->
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <div class="input-wrapper">
+          <div class="input-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          </div>
+          <input type="email" id="email" class="form-input" placeholder="alex@example.com" required />
+        </div>
+      </div>
+
+      <!-- Phone Number -->
+      <div class="form-group">
+        <label for="phone">Phone Number</label>
+        <div class="input-wrapper">
+          <div class="input-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          </div>
+          <input type="tel" id="phone" class="form-input" placeholder="+1 (555) 000-0000" required />
+        </div>
+      </div>
+
+      <!-- Delivery Address -->
+      <div class="form-group">
+        <label for="address">Pickup / Delivery Address</label>
+        <div class="input-wrapper">
+          <div class="input-icon" style="top: 14px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          </div>
+          <textarea id="address" class="form-input" placeholder="Street name, Apartment/House No, City" required></textarea>
+        </div>
+      </div>
+
+      <!-- Password -->
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div class="input-wrapper">
+          <div class="input-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          </div>
+          <input type="password" id="password" class="form-input" placeholder="Min. 6 characters" minlength="6" required />
+          <button type="button" class="password-toggle" onclick="togglePassword('password', this)" aria-label="Toggle password visibility">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Confirm Password -->
+      <div class="form-group">
+        <label for="confirmPassword">Confirm Password</label>
+        <div class="input-wrapper">
+          <div class="input-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <input type="password" id="confirmPassword" class="form-input" placeholder="Re-enter password" required />
+        </div>
+      </div>
+
+      <!-- Terms and Conditions Checkbox -->
+      <div class="checkbox-group">
+        <input type="checkbox" id="terms" required />
+        <label for="terms">I agree to the <a href="#">Terms of Service</a> & <a href="#">Privacy Policy</a> of Laundry Shop.</label>
+      </div>
+
+      <!-- Submit Button -->
+      <button type="submit" class="primary-btn" id="submitBtn">
+        <span class="spinner" id="btnSpinner"></span>
+        <span id="btnText">Create Account</span>
+      </button>
+
+    </form>
+
+    <!-- Footer link -->
+    <div class="auth-footer">
+      Already have an account? <a href="customer-login.html">Log In</a>
+    </div>
+
+  </div>
+
+  <script type="module">
+    /* Firebase Configuration & Authentication Handler Integration Structure */
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+
+import { getAuth, createUserWithEmailAndPassword }
+from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
+
+import { getDatabase, ref, set }
+from "https://www.gstatic.com/firebasejs/12.2.1/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDgDBO5MwwMk1_8JoZCQALJZ6qDkKT6wp0",
+  authDomain: "laundry-shop-b6981.firebaseapp.com",
+  databaseURL: "https://laundry-shop-b6981-default-rtdb.firebaseio.com",
+  projectId: "laundry-shop-b6981",
+  storageBucket: "laundry-shop-b6981.firebasestorage.app",
+  messagingSenderId: "151928558974",
+  appId: "1:151928558974:web:35d60143030176b32e0f2f"
+};
+
+const app = initializeApp(firebaseConfig);
+
+window.auth = getAuth(app);
+window.db = getDatabase(app);
+
+
+
+    const LaundryAuth = {
+      // Firebase Realtime DB & Auth Preparedness Method
+      signUpWithFirebase: async function(userData) {
+        console.log("Firebase Auth Request: Registering customer", userData.email);
+
+alert("Signup Started");
+console.log(window.auth);
+console.log(window.db);
+
+const { createUserWithEmailAndPassword } = await import("https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js");
+const { ref, set } = await import("https://www.gstatic.com/firebasejs/12.2.1/firebase-database.js");
+
+const userCredential = await createUserWithEmailAndPassword(
+    window.auth,
+    userData.email,
+    userData.password
+);
+
+const uid = userCredential.user.uid;
+
+await set(ref(window.db, "customers/" + uid), {
+    name: userData.name,
+    email: userData.email,
+    phone: userData.phone,
+    address: userData.address,
+    role: "customer",
+    createdAt: new Date().toISOString()
+});
+
+return userCredential.user;
+
+        
+        
+      }
+    };
+
+    // Password Visibility Toggle
+    function togglePassword(inputId, btn) {
+      const input = document.getElementById(inputId);
+      if (input.type === 'password') {
+        input.type = 'text';
+      } else {
+        input.type = 'password';
+      }
+    }
+
+    // Alert Banner Display
+    function showAlert(message, type = 'error') {
+      const banner = document.getElementById('alertBanner');
+      const msgSpan = document.getElementById('alertMessage');
+      banner.className = 'alert-banner ' + type;
+      msgSpan.textContent = message;
+    }
+
+    function hideAlert() {
+      const banner = document.getElementById('alertBanner');
+      banner.className = 'alert-banner';
+    }
+
+    // Form Submission Handler
+    async function handleSignup(event) {
+      event.preventDefault();
+      hideAlert();
+
+      const name = document.getElementById('fullName').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const address = document.getElementById('address').value.trim();
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+
+      // Input Validation
+      if (password.length < 6) {
+        showAlert('Password must be at least 6 characters long.', 'error');
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        showAlert('Passwords do not match. Please verify both fields.', 'error');
+        return;
+      }
+
+      // UI Loading State
+      const submitBtn = document.getElementById('submitBtn');
+      const btnSpinner = document.getElementById('btnSpinner');
+      const btnText = document.getElementById('btnText');
+
+      submitBtn.disabled = true;
+      btnSpinner.style.display = 'inline-block';
+      btnText.textContent = 'Creating Account...';
+
+      try {
+        await LaundryAuth.signUpWithFirebase({
+          name: name,
+          email: email,
+          phone: phone,
+          address: address,
+          password: password
+        });
+
+        showAlert('Account created successfully! Redirecting...', 'success');
+
+        // Redirect to Home Dashboard
+        setTimeout(() => {
+          window.location.href = 'index.html';
+        }, 800);
+
+      } catch (err) {
+        console.error(err);
+       alert(err.message);
+        showAlert(err.message || 'Failed to create account. Please try again.', 'error');
+        submitBtn.disabled = false;
+        btnSpinner.style.display = 'none';
+        btnText.textContent = 'Create Account';
+      }
+    }
+    window.handleSignup = handleSignup;
+  </script>
+</body>
+</html>
