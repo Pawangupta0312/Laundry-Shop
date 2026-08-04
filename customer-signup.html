@@ -564,7 +564,7 @@ return userCredential.user;
         });
 
         showAlert('Account created successfully! Redirecting...', 'success');
-
+         await window.auth.signOut();
         // Redirect to Home Dashboard
         setTimeout(() => {
           window.location.href = 'customer-login.html';
