@@ -561,15 +561,15 @@
        ========================================================================== */
 
     // Firebase Configuration Object
-    window.LaundryFirebaseConfig = {
-      apiKey: "FIREBASE_API_KEY_PLACEHOLDER",
-      authDomain: "laundry-shop-app.firebaseapp.com",
-      databaseURL: "https://laundry-shop-app-default-rtdb.firebaseio.com",
-      projectId: "laundry-shop-app",
-      storageBucket: "laundry-shop-app.appspot.com",
-      messagingSenderId: "102030405060",
-      appId: "1:102030405060:web:abc123def456"
-    };
+    const firebaseConfig = {
+  apiKey: "AIzaSyDgDBO5MwwMk1_8JoZCQALJZ6qDkKT6wp0",
+  authDomain: "laundry-shop-b6981.firebaseapp.com",
+  databaseURL: "https://laundry-shop-b6981-default-rtdb.firebaseio.com",
+  projectId: "laundry-shop-b6981",
+  storageBucket: "laundry-shop-b6981.firebasestorage.app",
+  messagingSenderId: "151928558974",
+  appId: "1:151928558974:web:35d60143030176b32e0f2f"
+};
 
     let firebaseAuthInstance = null;
 
@@ -577,7 +577,7 @@
     try {
       if (typeof firebase !== 'undefined' && firebase.initializeApp) {
         if (!firebase.apps.length) {
-          firebase.initializeApp(window.LaundryFirebaseConfig);
+          firebase.initializeApp(firebaseConfig);
         }
         firebaseAuthInstance = firebase.auth();
         console.log("Firebase Authentication initialized successfully.");
@@ -670,7 +670,7 @@
       btnText.textContent = 'Authenticating...';
 
       try {
-        if (firebaseAuthInstance && window.LaundryFirebaseConfig.apiKey !== 'FIREBASE_API_KEY_PLACEHOLDER') {
+        if (firebaseAuthInstance) {
           // Live Firebase Authentication Call
           await firebaseAuthInstance.signInWithEmailAndPassword(email, password);
           showAlert('Login successful! Redirecting...', 'success');
@@ -741,7 +741,7 @@
       resetBtnText.textContent = 'Sending...';
 
       try {
-        if (firebaseAuthInstance && window.LaundryFirebaseConfig.apiKey !== 'FIREBASE_API_KEY_PLACEHOLDER') {
+        if (firebaseAuthInstance) {
           await firebaseAuthInstance.sendPasswordResetEmail(resetEmail);
         } else {
           await new Promise(resolve => setTimeout(resolve, 1000));
