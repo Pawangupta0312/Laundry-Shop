@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FreshPress - Customer Dashboard</title>
+  <style>
+    :root {
+      --bg-primary: #f2f2f7;
+      --bg-surface: rgba(255, 255, 255, 0.75);
+      --bg-card: rgba(255, 255, 255, 0.65);
+      --border-color: rgba(255, 255, 255, 0.4);
+      --border-subtle: rgba(0, 0, 0, 0.08);
+      --text-main: #1c1c1e;
+      --text-muted: #8e8e93;
+      --accent-blue: #007aff;
+      --accent-blue-hover: #0056b3;
+      --accent-green: #34c759;
+      --accent-purple: #af52de;
+      --accent-orange: #ff9500;
+      --shadow-sm: 0 4px 16px rgba(0, 0, 0, 0.04);
+      --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.08);
+      --glass-blur: blur(20px) saturate(180%);
+      --radius-sm: 12px;
+      --radius-md: 20px;
+      --radius-lg: 28px;
+    }
+
+    [data-theme="dark"] {
+      --bg-primary: #000000;
+      --bg-surface: rgba(28, 28, 30, 0.78);
+      --bg-card: rgba(44, 44, 46, 0.68);
+      --border-color: rgba(255, 255, 255, 0.12);
+      --border-subtle: rgba(255, 255, 255, 0.06);
+      --text-main: #f2f2f7;
+      --text-muted: #98989d;
+      --accent-blue: #0a84ff;
+      --accent-blue-hover: #409cff;
+      --accent-green: #30d158;
+      --accent-purple: #bf5af2;
+      --accent-orange: #ff9f0a;
+      --shadow-sm: 0 4px 16px rgba(0, 0, 0, 0.3);
+      --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.5);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .bg-orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.4;
+      z-index: 0;
+      pointer-events: none;
+    }
+    .orb-1 { width: 350px; height: 350px; background: radial-gradient(circle, #007aff 0%, #af52de 100%); top: -80px; left: -80px; }
+    .orb-2 { width: 400px; height: 400px; background: radial-gradient(circle, #34c759 0%, #007aff 100%); bottom: -100px; right: -80px; }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg-surface);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 16px 24px;
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text-main);
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+    .brand-icon {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      list-style: none;
+    }
+    .nav-link {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.95rem;
+      padding: 8px 14px;
+      border-radius: var(--radius-sm);
+      transition: all 0.2s ease;
+    }
+    .nav-link:hover, .nav-link.active {
+      color: var(--text-main);
+      background: var(--bg-card);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .btn-primary {
+      background: var(--accent-blue);
+      color: #ffffff;
+      box-shadow: 0 4px 14px rgba(0, 122, 255, 0.3);
+    }
+    .btn-primary:hover {
+      background: var(--accent-blue-hover);
+    }
+    .btn-secondary {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+    }
+    .btn-danger {
+      background: rgba(255, 59, 48, 0.15);
+      color: var(--accent-orange);
+      border: 1px solid rgba(255, 59, 48, 0.2);
+    }
+
+    .theme-toggle {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 50%;
+      width: 38px;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--text-main);
+    }
+
+    main {
+      position: relative;
+      z-index: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 24px;
+      width: 100%;
+      flex: 1;
+    }
+
+    .welcome-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .user-greeting {
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: -0.8px;
+    }
+    .user-greeting-sub {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    /* Grid Layout */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 24px;
+    }
+    @media (max-width: 900px) {
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .glass-card {
+      background: var(--bg-surface);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* Profile Summary Card */
+    .profile-avatar {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+      color: #fff;
+      font-size: 24px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+
+    .info-list {
+      margin-top: 16px;
+    }
+    .info-item {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .info-item:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+    .info-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .info-val {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-top: 2px;
+      word-break: break-word;
+    }
+
+    /* Stats Grid */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .stat-card {
+      background: var(--bg-surface);
+      backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 20px;
+    }
+    .stat-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      margin-bottom: 12px;
+    }
+    .stat-blue { background: rgba(0, 122, 255, 0.12); color: var(--accent-blue); }
+    .stat-orange { background: rgba(255, 149, 0, 0.12); color: var(--accent-orange); }
+    .stat-green { background: rgba(52, 199, 89, 0.12); color: var(--accent-green); }
+
+    .stat-num {
+      font-size: 1.8rem;
+      font-weight: 800;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .stat-title {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    /* Orders Section */
+    .section-title-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    .section-h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+
+    .order-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .order-item-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .order-id {
+      font-weight: 700;
+      font-size: 1rem;
+    }
+    .order-sub {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .badge-pending { background: rgba(255, 149, 0, 0.15); color: var(--accent-orange); }
+    .badge-active { background: rgba(0, 122, 255, 0.15); color: var(--accent-blue); }
+    .badge-delivered { background: rgba(52, 199, 89, 0.15); color: var(--accent-green); }
+    .badge-cancelled { background: rgba(142, 142, 147, 0.15); color: var(--text-muted); }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-muted);
+    }
+    .empty-icon {
+      font-size: 40px;
+      margin-bottom: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-orb orb-1"></div>
+  <div class="bg-orb orb-2"></div>
+
+  <header>
+    <div class="nav-container">
+      <a href="customer.html" class="brand-logo">
+        <div class="brand-icon">🧺</div>
+        <span>FreshPress</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="customer.html" class="nav-link active">Dashboard</a></li>
+        <li><a href="new-order.html" class="nav-link">New Order</a></li>
+        <li><a href="my-orders.html" class="nav-link">My Orders</a></li>
+        <li><a href="order-tracking.html" class="nav-link">Track Order</a></li>
+        <li><a href="profile.html" class="nav-link">Profile</a></li>
+      </ul>
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <button class="theme-toggle" id="theme-btn">🌙</button>
+        <button class="btn btn-danger" id="logout-btn">Log Out</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="welcome-header">
+      <div>
+        <h1 class="user-greeting" id="user-greeting">Welcome Back</h1>
+        <p class="user-greeting-sub" id="user-greeting-sub">Firebase Authenticated Customer Account</p>
+      </div>
+      <a href="new-order.html" class="btn btn-primary" style="padding: 12px 24px; font-size: 1rem;">
+        ➕ Schedule New Order
+      </a>
+    </div>
+
+    <div class="dashboard-grid">
+      <!-- Profile Card -->
+      <div class="glass-card">
+        <div class="profile-avatar" id="avatar-circle">?</div>
+        <h3 style="font-size: 1.2rem; font-weight: 700;" id="cust-name">Loading...</h3>
+        <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;" id="cust-email">...</div>
+
+        <div class="info-list">
+          <div class="info-item">
+            <span class="info-label">Phone Number</span>
+            <span class="info-val" id="cust-phone">Loading...</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Pickup & Delivery Address</span>
+            <span class="info-val" id="cust-address">Loading...</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Account Created</span>
+            <span class="info-val" id="cust-created">...</span>
+          </div>
+        </div>
+
+        <a href="profile.html" class="btn btn-secondary" style="width: 100%; margin-top: 20px; text-align: center;">Edit Profile Information</a>
+      </div>
+
+      <!-- Main Content Right -->
+      <div>
+        <div class="stats-row">
+          <div class="stat-card">
+            <div class="stat-icon stat-blue">📦</div>
+            <div class="stat-num" id="stat-total-orders">0</div>
+            <div class="stat-title">Total Orders</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon stat-orange">🔄</div>
+            <div class="stat-num" id="stat-active-orders">0</div>
+            <div class="stat-title">Active Orders</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon stat-green">₹</div>
+            <div class="stat-num" id="stat-total-spent">₹0.00</div>
+            <div class="stat-title">Total Spent</div>
+          </div>
+        </div>
+
+        <div class="glass-card">
+          <div class="section-title-bar">
+            <h3 class="section-h3">Recent Orders</h3>
+            <a href="my-orders.html" style="color: var(--accent-blue); font-size: 0.9rem; font-weight: 600; text-decoration: none;">View All &rarr;</a>
+          </div>
+
+          <div id="orders-container" class="order-list">
+            <div class="empty-state">
+              <div class="empty-icon">⏳</div>
+              <p>Fetching your orders from Firebase database...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getDatabase, ref, onValue, get } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDgDBO5MwwMk1_8JoZCQALJZ6qDkKT6wp0",
+      authDomain: "laundry-shop-b6981.firebaseapp.com",
+      databaseURL: "https://laundry-shop-b6981-default-rtdb.firebaseio.com",
+      projectId: "laundry-shop-b6981",
+      storageBucket: "laundry-shop-b6981.firebasestorage.app",
+      messagingSenderId: "151928558974",
+      appId: "1:151928558974:web:35d60143030176b32e0f2f"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const database = getDatabase(app);
+
+    // Theme setup
+    const themeBtn = document.getElementById('theme-btn');
+    if (localStorage.getItem('theme') === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      themeBtn.textContent = '☀️';
+    }
+    themeBtn.addEventListener('click', () => {
+      if (document.documentElement.getAttribute('data-theme') === 'dark') {
+        document.documentElement.removeAttribute('data-theme');
+        localStorage.setItem('theme', 'light');
+        themeBtn.textContent = '🌙';
+      } else {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        localStorage.setItem('theme', 'dark');
+        themeBtn.textContent = '☀️';
+      }
+    });
+
+    // Logout
+    document.getElementById('logout-btn').addEventListener('click', async () => {
+      await signOut(auth);
+      window.location.href = "index.html";
+    });
+
+    // Check Auth & Fetch Real Firebase Customer Data
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        window.location.href = "customer-login.html";
+        return;
+      }
+
+      // Load Customer Profile from `customers/{user.uid}`
+      const customerRef = ref(database, 'customers/' + user.uid);
+      onValue(customerRef, (snapshot) => {
+        if (snapshot.exists()) {
+          const cust = snapshot.val();
+          document.getElementById('user-greeting').textContent = `Hello, ${cust.name || 'Customer'}`;
+          document.getElementById('cust-name').textContent = cust.name || 'Customer';
+          document.getElementById('cust-email').textContent = cust.email || user.email;
+          document.getElementById('cust-phone').textContent = cust.phone || 'Not provided';
+          document.getElementById('cust-address').textContent = cust.address || 'Not provided';
+          
+          if (cust.createdAt) {
+            const dt = new Date(cust.createdAt);
+            document.getElementById('cust-created').textContent = dt.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric'});
+          } else {
+            document.getElementById('cust-created').textContent = 'Recent';
+          }
+
+          // Avatar initials
+          const initial = cust.name ? cust.name.charAt(0).toUpperCase() : 'U';
+          document.getElementById('avatar-circle').textContent = initial;
+        } else {
+          // Fallback if not yet created in DB
+          document.getElementById('user-greeting').textContent = `Hello, ${user.email.split('@')[0]}`;
+          document.getElementById('cust-name').textContent = user.email.split('@')[0];
+          document.getElementById('cust-email').textContent = user.email;
+          document.getElementById('cust-phone').textContent = 'Please update profile';
+          document.getElementById('cust-address').textContent = 'Please update profile';
+          document.getElementById('avatar-circle').textContent = user.email.charAt(0).toUpperCase();
+        }
+      });
+
+      // Load Customer Orders from `orders`
+      const ordersRef = ref(database, 'orders');
+      onValue(ordersRef, (snapshot) => {
+        const ordersContainer = document.getElementById('orders-container');
+        let totalCount = 0;
+        let activeCount = 0;
+        let totalSpent = 0;
+        const customerOrders = [];
+
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+          Object.keys(data).forEach(key => {
+            const order = data[key];
+            if (order.customerId === user.uid) {
+              totalCount++;
+              const amt = parseFloat(order.amount) || 0;
+              totalSpent += amt;
+              
+              const status = order.orderStatus || 'Pending';
+              if (status !== 'Delivered' && status !== 'Cancelled' && status !== 'Rejected') {
+                activeCount++;
+              }
+              customerOrders.push({ id: key, ...order });
+            }
+          });
+        }
+
+        // Update Stats UI
+        document.getElementById('stat-total-orders').textContent = totalCount;
+        document.getElementById('stat-active-orders').textContent = activeCount;
+        document.getElementById('stat-total-spent').textContent = `₹${totalSpent.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+        // Render Recent Orders List
+        if (customerOrders.length === 0) {
+          ordersContainer.innerHTML = `
+            <div class="empty-state">
+              <div class="empty-icon">🧺</div>
+              <p>You haven't placed any orders yet.</p>
+              <a href="new-order.html" class="btn btn-primary" style="margin-top: 12px;">Place Your First Order</a>
+            </div>
+          `;
+          return;
+        }
+
+        // Sort descending by createdAt
+        customerOrders.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+
+        // Show max 5 recent orders
+        const recentOrders = customerOrders.slice(0, 5);
+        let html = '';
+
+        recentOrders.forEach(order => {
+          let badgeClass = 'badge-pending';
+          const st = order.orderStatus || 'Pending';
+          if (st === 'Delivered') badgeClass = 'badge-delivered';
+          else if (st === 'Cancelled' || st === 'Rejected') badgeClass = 'badge-cancelled';
+          else if (st !== 'Pending') badgeClass = 'badge-active';
+
+          const dateStr = order.createdAt ? new Date(order.createdAt).toLocaleDateString() : 'N/A';
+
+          html += `
+            <div class="order-item-card">
+              <div>
+                <div class="order-id">${order.orderId || order.id}</div>
+                <div class="order-sub">${order.service} • ${order.weight || order.quantity} kg • ${dateStr}</div>
+              </div>
+              <div style="display: flex; align-items: center; gap: 12px;">
+                <span class="badge ${badgeClass}">${st}</span>
+                <span style="font-weight: 700; font-size: 1rem;">₹${parseFloat(order.amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                <a href="order-tracking.html?orderId=${encodeURIComponent(order.orderId || order.id)}" class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.8rem;">Track</a>
+              </div>
+            </div>
+          `;
+        });
+
+        ordersContainer.innerHTML = html;
+      });
+    });
+  </script>
+</body>
+</html>

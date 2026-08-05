@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FreshPress - Profile Settings</title>
+  <style>
+    :root {
+      --bg-primary: #f2f2f7;
+      --bg-surface: rgba(255, 255, 255, 0.75);
+      --bg-card: rgba(255, 255, 255, 0.65);
+      --border-color: rgba(255, 255, 255, 0.4);
+      --border-subtle: rgba(0, 0, 0, 0.08);
+      --text-main: #1c1c1e;
+      --text-muted: #8e8e93;
+      --accent-blue: #007aff;
+      --accent-blue-hover: #0056b3;
+      --accent-green: #34c759;
+      --accent-purple: #af52de;
+      --accent-red: #ff3b30;
+      --shadow-sm: 0 4px 16px rgba(0, 0, 0, 0.04);
+      --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.08);
+      --glass-blur: blur(20px) saturate(180%);
+      --radius-sm: 12px;
+      --radius-md: 20px;
+      --radius-lg: 28px;
+    }
+
+    [data-theme="dark"] {
+      --bg-primary: #000000;
+      --bg-surface: rgba(28, 28, 30, 0.78);
+      --bg-card: rgba(44, 44, 46, 0.68);
+      --border-color: rgba(255, 255, 255, 0.12);
+      --border-subtle: rgba(255, 255, 255, 0.06);
+      --text-main: #f2f2f7;
+      --text-muted: #98989d;
+      --accent-blue: #0a84ff;
+      --accent-blue-hover: #409cff;
+      --accent-green: #30d158;
+      --accent-purple: #bf5af2;
+      --accent-red: #ff453a;
+      --shadow-sm: 0 4px 16px rgba(0, 0, 0, 0.3);
+      --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.5);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .bg-orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.4;
+      z-index: 0;
+      pointer-events: none;
+    }
+    .orb-1 { width: 380px; height: 380px; background: radial-gradient(circle, #007aff 0%, #af52de 100%); top: -80px; left: -80px; }
+    .orb-2 { width: 400px; height: 400px; background: radial-gradient(circle, #34c759 0%, #007aff 100%); bottom: -100px; right: -80px; }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg-surface);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 16px 24px;
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text-main);
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+    .brand-icon {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      list-style: none;
+    }
+    .nav-link {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.95rem;
+      padding: 8px 14px;
+      border-radius: var(--radius-sm);
+      transition: all 0.2s ease;
+    }
+    .nav-link:hover, .nav-link.active {
+      color: var(--text-main);
+      background: var(--bg-card);
+    }
+
+    .theme-toggle {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 50%;
+      width: 38px;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--text-main);
+    }
+
+    main {
+      position: relative;
+      z-index: 1;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 32px 24px;
+      width: 100%;
+      flex: 1;
+    }
+
+    .page-title {
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: -0.8px;
+      margin-bottom: 6px;
+    }
+    .page-subtitle {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-bottom: 24px;
+    }
+
+    .glass-card {
+      background: var(--bg-surface);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 24px;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+    label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-subtle);
+      background: var(--bg-card);
+      color: var(--text-main);
+      font-size: 0.95rem;
+      outline: none;
+    }
+    input:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .btn-submit {
+      padding: 12px 24px;
+      background: var(--accent-blue);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(0, 122, 255, 0.3);
+    }
+
+    .alert {
+      padding: 12px 16px;
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      margin-bottom: 18px;
+      display: none;
+    }
+    .alert-danger {
+      background: rgba(255, 59, 48, 0.15);
+      color: var(--accent-red);
+      border: 1px solid rgba(255, 59, 48, 0.3);
+    }
+    .alert-success {
+      background: rgba(52, 199, 89, 0.15);
+      color: var(--accent-green);
+      border: 1px solid rgba(52, 199, 89, 0.3);
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-orb orb-1"></div>
+  <div class="bg-orb orb-2"></div>
+
+  <header>
+    <div class="nav-container">
+      <a href="customer.html" class="brand-logo">
+        <div class="brand-icon">🧺</div>
+        <span>FreshPress</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="customer.html" class="nav-link">Dashboard</a></li>
+        <li><a href="new-order.html" class="nav-link">New Order</a></li>
+        <li><a href="my-orders.html" class="nav-link">My Orders</a></li>
+        <li><a href="order-tracking.html" class="nav-link">Track Order</a></li>
+        <li><a href="profile.html" class="nav-link active">Profile</a></li>
+      </ul>
+      <button class="theme-toggle" id="theme-btn">🌙</button>
+    </div>
+  </header>
+
+  <main>
+    <h1 class="page-title">Profile Settings</h1>
+    <p class="page-subtitle">Manage your personal details & pickup address stored in Firebase</p>
+
+    <div class="alert alert-danger" id="error-msg"></div>
+    <div class="alert alert-success" id="success-msg"></div>
+
+    <div class="glass-card">
+      <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 20px;">Personal Details</h3>
+      <form id="profile-form">
+        <div class="form-group">
+          <label for="email">Email Address (Auth Identity)</label>
+          <input type="email" id="email" disabled />
+        </div>
+
+        <div class="form-group">
+          <label for="name">Full Name</label>
+          <input type="text" id="name" required placeholder="Your full name" />
+        </div>
+
+        <div class="form-group">
+          <label for="phone">Phone Number</label>
+          <input type="tel" id="phone" required placeholder="+1 (555) 000-0000" />
+        </div>
+
+        <div class="form-group">
+          <label for="address">Default Pickup & Delivery Address</label>
+          <textarea id="address" rows="3" required placeholder="Full street address..."></textarea>
+        </div>
+
+        <button type="submit" class="btn-submit" id="save-btn">Save Profile Changes</button>
+      </form>
+    </div>
+
+    <div class="glass-card">
+      <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 20px;">Security & Password</h3>
+      <form id="password-form">
+        <div class="form-group">
+          <label for="new-password">New Password</label>
+          <input type="password" id="new-password" required minlength="6" placeholder="Enter new password (min 6 chars)" />
+        </div>
+
+        <button type="submit" class="btn-submit" id="pwd-btn" style="background: var(--text-main);">Update Password</button>
+      </form>
+    </div>
+  </main>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAuth, onAuthStateChanged, updatePassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getDatabase, ref, get, update } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDgDBO5MwwMk1_8JoZCQALJZ6qDkKT6wp0",
+      authDomain: "laundry-shop-b6981.firebaseapp.com",
+      databaseURL: "https://laundry-shop-b6981-default-rtdb.firebaseio.com",
+      projectId: "laundry-shop-b6981",
+      storageBucket: "laundry-shop-b6981.firebasestorage.app",
+      messagingSenderId: "151928558974",
+      appId: "1:151928558974:web:35d60143030176b32e0f2f"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const database = getDatabase(app);
+
+    // Theme setup
+    const themeBtn = document.getElementById('theme-btn');
+    if (localStorage.getItem('theme') === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      themeBtn.textContent = '☀️';
+    }
+    themeBtn.addEventListener('click', () => {
+      if (document.documentElement.getAttribute('data-theme') === 'dark') {
+        document.documentElement.removeAttribute('data-theme');
+        localStorage.setItem('theme', 'light');
+        themeBtn.textContent = '🌙';
+      } else {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        localStorage.setItem('theme', 'dark');
+        themeBtn.textContent = '☀️';
+      }
+    });
+
+    const errorMsg = document.getElementById('error-msg');
+    const successMsg = document.getElementById('success-msg');
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = "customer-login.html";
+        return;
+      }
+
+      document.getElementById('email').value = user.email;
+
+      // Load Profile from Firebase database `customers/{uid}`
+      const custRef = ref(database, 'customers/' + user.uid);
+      const snapshot = await get(custRef);
+      if (snapshot.exists()) {
+        const data = snapshot.val();
+        document.getElementById('name').value = data.name || '';
+        document.getElementById('phone').value = data.phone || '';
+        document.getElementById('address').value = data.address || '';
+      }
+    });
+
+    // Profile update
+    document.getElementById('profile-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      errorMsg.style.display = 'none';
+      successMsg.style.display = 'none';
+
+      const user = auth.currentUser;
+      if (!user) return;
+
+      const name = document.getElementById('name').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const address = document.getElementById('address').value.trim();
+
+      try {
+        await update(ref(database, 'customers/' + user.uid), {
+          name: name,
+          phone: phone,
+          address: address
+        });
+
+        successMsg.textContent = "Profile details updated successfully in Firebase!";
+        successMsg.style.display = 'block';
+      } catch (err) {
+        errorMsg.textContent = err.message.replace('Firebase: ', '');
+        errorMsg.style.display = 'block';
+      }
+    });
+
+    // Password update
+    document.getElementById('password-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      errorMsg.style.display = 'none';
+      successMsg.style.display = 'none';
+
+      const user = auth.currentUser;
+      const newPwd = document.getElementById('new-password').value;
+
+      try {
+        await updatePassword(user, newPwd);
+        successMsg.textContent = "Password updated successfully!";
+        successMsg.style.display = 'block';
+        document.getElementById('new-password').value = '';
+      } catch (err) {
+        errorMsg.textContent = err.message.replace('Firebase: ', '');
+        errorMsg.style.display = 'block';
+      }
+    });
+  </script>
+</body>
+</html>
